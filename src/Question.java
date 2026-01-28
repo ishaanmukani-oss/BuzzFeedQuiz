@@ -18,16 +18,18 @@ public class Question {
             System.out.println("[" + choice + "]:" +
                     this.possibleAnswers[i].label);
         }
-        if(sc.hasNextInt() == false){  ///Ishaan
-        sc.next();
-        return ask (sc);
+
+        //ishaan wrote this
+        if(sc.hasNextInt() == false){
+            sc.next();
+            return ask(sc);
         }
-       
-        int ans = sc.nextInt();  //Dilan
+        int ans = sc.nextInt();
+
+        //dilan wrote this
         if(ans != 1 && ans != 2 && ans != 3 && ans != 4 ){
             return ask(sc);
-        } 
-        return possibleAnswers[ans - 1].cat;
+        }
+        return possibleAnswers[ans-1].cat;
     }
-
 }

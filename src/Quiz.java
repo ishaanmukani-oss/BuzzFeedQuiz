@@ -1,17 +1,25 @@
 import java.util.Scanner;
+import java.util.HashMap;
 
 public class Quiz {
         static Scanner sc = new Scanner(System.in);
+        static FileSave fs;
+        static String username;
 
         public static void main(String[] args) throws Exception {
+                fs = new FileSave();
+                HashMap<String, String> results = fs.getResults();
+                HashMap<String, Integer> cats = new HashMap<>();
                 // dilan created categories
-                Category nike = new Category("Nike","You are athletic and love to play many sports.");
+                Category nike = new Category("Nike", "You are athletic and love to play many sports.");
                 Category polo = new Category("Ralph Lauren", "You are classy and elegant in everything you do.");
-                Category uniqlo = new Category("Uniqlo)","You are a very relaxed and simple person.");
+                Category uniqlo = new Category("Uniqlo)", "You are a very relaxed and simple person.");
                 Category balenciaga = new Category("Balenciaga", "You are very wealthy and like to show off.");
-                
+
+                System.out.println("Enter your username: ");
+                username = sc.nextLine();
                 // dilan did question 1-5, ishaan did questions 6-9
-                
+
                 Question q1 = new Question("What is your favorite activity to do in your free time?");
                 q1.possibleAnswers[0] = new Answer("Play sports with your friends", nike);
                 q1.possibleAnswers[1] = new Answer("Read a book at the park", polo);
@@ -42,44 +50,59 @@ public class Quiz {
                 q5.possibleAnswers[2] = new Answer("I use Instagram", polo);
                 q5.possibleAnswers[3] = new Answer("I use X (Twitter)", balenciaga);
 
-               Question q6 = new Question("What Sport do you watch the most?");
-               q6.possibleAnswers[0] = new Answer("I watch Basketball", nike);
-               q6.possibleAnswers[1] = new Answer("I watch Golf", polo);
-               q6.possibleAnswers[2] = new Answer("I watch Soccer", uniqlo);
-               q6.possibleAnswers[3] = new Answer("I watch Formula 1", balenciaga);
+                Question q6 = new Question("What Sport do you watch the most?");
+                q6.possibleAnswers[0] = new Answer("I watch Basketball", nike);
+                q6.possibleAnswers[1] = new Answer("I watch Golf", polo);
+                q6.possibleAnswers[2] = new Answer("I watch Soccer", uniqlo);
+                q6.possibleAnswers[3] = new Answer("I watch Formula 1", balenciaga);
 
-               Question q7 = new Question("Which personality trait resonates with you most?");
-               q7.possibleAnswers[0] = new Answer("I am Quiet", uniqlo);
-               q7.possibleAnswers[1] = new Answer("I am Composed", polo);
-               q7.possibleAnswers[2] = new Answer("I am Hardworking", nike);
-               q7.possibleAnswers[3] = new Answer("I am confident", balenciaga);
+                Question q7 = new Question("Which personality trait resonates with you most?");
+                q7.possibleAnswers[0] = new Answer("I am Quiet", uniqlo);
+                q7.possibleAnswers[1] = new Answer("I am Composed", polo);
+                q7.possibleAnswers[2] = new Answer("I am Hardworking", nike);
+                q7.possibleAnswers[3] = new Answer("I am confident", balenciaga);
 
-               Question q8 = new Question("What's your ideal job?");
-               q8.possibleAnswers[0] = new Answer("My ideal job is a Lawyer", polo);
-               q8.possibleAnswers[1] = new Answer("My ideal job is an Athlete", nike);
-               q8.possibleAnswers[2] = new Answer("My ideal job is a Musician", uniqlo);
-               q8.possibleAnswers[3] = new Answer("My ideal job is a CEO", balenciaga);
+                Question q8 = new Question("What's your ideal job?");
+                q8.possibleAnswers[0] = new Answer("My ideal job is a Lawyer", polo);
+                q8.possibleAnswers[1] = new Answer("My ideal job is an Athlete", nike);
+                q8.possibleAnswers[2] = new Answer("My ideal job is a Musician", uniqlo);
+                q8.possibleAnswers[3] = new Answer("My ideal job is a CEO", balenciaga);
 
-               Question q9 = new Question("What is your favorite television show? ");
-               q9.possibleAnswers[0] = new Answer("My favorite show is Breaking Bad", balenciaga);
-               q9.possibleAnswers[1] = new Answer("My favorite show is Outer Banks", uniqlo);
-               q9.possibleAnswers[2] = new Answer("My favorite show is Suits", polo);
-               q9.possibleAnswers[3] = new Answer("My favorite show is Stranger Things", nike);
-
-
-                
+                Question q9 = new Question("What is your favorite television show? ");
+                q9.possibleAnswers[0] = new Answer("My favorite show is Breaking Bad", balenciaga);
+                q9.possibleAnswers[1] = new Answer("My favorite show is Outer Banks", uniqlo);
+                q9.possibleAnswers[2] = new Answer("My favorite show is Suits", polo);
+                q9.possibleAnswers[3] = new Answer("My favorite show is Stranger Things", nike);
 
                 // ishaan edited this
                 gameIntro();
+
                 Question[] qList = { q1, q2, q3, q4, q5, q6, q7, q8, q9 };
                 for (Question q : qList) {
                         Category c = q.ask(sc);
                         c.points++;
                 }
+
                 Category[] cList = { nike, polo, uniqlo, balenciaga };
                 int index = getMostPopularCatIndex(cList);
+
                 System.out.println("If you were a clothing brand, you would be " + cList[index].label + ". ");
                 System.out.println(cList[index].description);
+                fs.updateResult(username, cList[index].label);
+
+                for (String cat : results.values()) {
+                        if (cats.containsKey(cat)) {
+                                cats.put(cat, cats.get(cat) + 1);
+                        } else {
+                                cats.put(cat, 1);
+                        }
+                }
+
+                System.out.println("Amount of people in each category");
+
+                for (String cat : cats.keySet()) {
+                        System.out.println(cat + ", " + cats.get(cat));
+                }
 
         }
 
@@ -87,25 +110,24 @@ public class Quiz {
                 // dilan edited this
                 System.out.println("Which Clothing Brand Are You? Play to Find Out!");
                 System.out.println("You get to choose numbers 1-4 for every question. Enter '1' to begin!");
-                
-                if(sc.hasNextInt() == false){
+
+                if (sc.hasNextInt() == false) {
                         System.out.println("Unidentifiable input. Please enter '1' to play");
                         sc.next();
-                         gameIntro();
-                         return;
+                        gameIntro();
+                        return;
                 }
                 int play = sc.nextInt();
                 if (play != 1) {
                         System.out.println("Unidentifiable input. Please enter '1' to play");
+                        sc.next();
                         gameIntro();
                         return;
-                } else {
-                        play = sc.nextInt();
                 }
         }
 
         // returns the index that is the max
-        // the tie breaker is the first Category that has the count is the "max" :/ 
+        // the tie breaker is the first Category that has the count is the "max" :/
         public static int getMostPopularCatIndex(Category[] counts) {
                 int maxCount = 0;
                 int maxIndex = 0;
